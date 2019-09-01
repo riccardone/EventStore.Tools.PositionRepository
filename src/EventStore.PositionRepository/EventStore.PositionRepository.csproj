@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Product>EventStore PositionRepository</Product>
+    <Authors>Riccardo Di Nuzzo</Authors>
+    <Copyright>Riccardo Di Nuzzo</Copyright>
+    <Description>A repository to save a position and get the current position in EventStore</Description>
+    <PackageProjectUrl>https://github.com/riccardone/EventStore.PositionRepository</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageTags>EventSourcing, EventStore, Read Models</PackageTags>
+    <PackageReleaseNotes>Start</PackageReleaseNotes>
+    <PackageId>EventStore.Tools.PositionRepository</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="eventstore.client" Version="5.0.2" />
+    <PackageReference Include="nlog" Version="4.6.7" />
+  </ItemGroup>
+
+</Project>

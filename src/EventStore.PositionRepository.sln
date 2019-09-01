@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.62
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore.PositionRepository", "EventStore.PositionRepository\EventStore.PositionRepository.csproj", "{DBB5BB7E-9884-4333-8716-3551641B3F24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore.PositionRepository.TestClient", "EventStore.PositionRepository.TestClient\EventStore.PositionRepository.TestClient.csproj", "{A9AD84FD-770E-426F-9FCC-669D5B2786E9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DBB5BB7E-9884-4333-8716-3551641B3F24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBB5BB7E-9884-4333-8716-3551641B3F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBB5BB7E-9884-4333-8716-3551641B3F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBB5BB7E-9884-4333-8716-3551641B3F24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9AD84FD-770E-426F-9FCC-669D5B2786E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9AD84FD-770E-426F-9FCC-669D5B2786E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9AD84FD-770E-426F-9FCC-669D5B2786E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9AD84FD-770E-426F-9FCC-669D5B2786E9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C7E841CB-D602-4E45-99D0-544AF4AFB1B9}
+	EndGlobalSection
+EndGlobal
