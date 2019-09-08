@@ -1,4 +1,4 @@
-# EventStore.PositionRepository
+# A Position Repository for EventStore
 To store current position and retrieve last used position on EventStore. This nuget is written in C# .Net Standard and it's compatible with both .Net Framwework and Core projects. It can be used whenever you need to retrieve the last processing position or save the current. The destination of the position is in an EventStore stream. The stream will contains only 1 event that is your position. 
 
 You can reference this project using Nuget from within Visual Studio
