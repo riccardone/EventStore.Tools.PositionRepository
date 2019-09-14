@@ -10,14 +10,14 @@
     <RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>EventSourcing, EventStore, Read Models</PackageTags>
-    <PackageReleaseNotes>Start</PackageReleaseNotes>
+    <PackageReleaseNotes>Removed nlog dependency and added ILogger abstraction</PackageReleaseNotes>
     <PackageId>EventStore.Tools.PositionRepository</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="eventstore.client" Version="5.0.2" />
-    <PackageReference Include="nlog" Version="4.6.7" />
   </ItemGroup>
 
 </Project>

@@ -19,7 +19,8 @@ namespace EventStore.PositionRepository.TestClient
             ConfigureLogging();
             var connSettings = ConnectionSettings.Create().SetDefaultUserCredentials(new UserCredentials("admin", "changeit"));
             var connBuilder = new ConnectionBuilder(new Uri("tcp://localhost:1113"), connSettings, "testRepository");
-            var positionRepo = new PositionRepository($"Position-{connBuilder.ConnectionName}", "PositionUpdated", connBuilder);
+            var positionRepo = new PositionRepository($"Position-{connBuilder.ConnectionName}", "PositionUpdated",
+                connBuilder, new NLogLogger(LogManager.GetCurrentClassLogger()));
             positionRepo.Start().Wait();
             Log.Info($"Initial position is {positionRepo.Get()}");
             using (var connection = connBuilder.Build())

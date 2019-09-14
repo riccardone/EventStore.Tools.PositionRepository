@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 using System.Timers;
 using EventStore.ClientAPI;
 using Newtonsoft.Json;
-using NLog;
 
 namespace EventStore.PositionRepository
 {
     public class PositionRepository : IPositionRepository
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private readonly ILogger _log;
         private readonly string _positionStreamName;
         private readonly IConnectionBuilder _connectionBuilder;
         private readonly int _interval;
@@ -22,7 +21,8 @@ namespace EventStore.PositionRepository
         private Position _position = Position.Start;
         private Position _lastSavedPosition = Position.Start;
 
-        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connBuilder, int interval = 1000)
+        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connBuilder,
+            ILogger logger, int interval = 1000)
         {
             _positionStreamName = positionStreamName;
             _connectionBuilder = connBuilder;
@@ -32,6 +32,13 @@ namespace EventStore.PositionRepository
             _timer = new Timer(interval);
             _timer.Elapsed += _timer_Elapsed;
             _timer.Enabled = true;
+            _log = logger;
+        }
+
+        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connBuilder,
+            int interval = 1000) : this(positionStreamName, positionEventType, connBuilder,
+            new SimpleConsoleLogger(nameof(PositionRepository)), interval)
+        {
         }
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -60,7 +67,7 @@ namespace EventStore.PositionRepository
 
         private void _connection_Disconnected(object sender, ClientConnectionEventArgs e)
         {
-            Log.Warn($"Disconnected '{e.Connection.ConnectionName}'");
+            _log.Warn($"Disconnected '{e.Connection.ConnectionName}'");
             Stop();
             Start();
         }
@@ -72,7 +79,7 @@ namespace EventStore.PositionRepository
             _connection.Disconnected -= _connection_Disconnected;
             _connection?.Close();
             _timer.Stop();
-            Log.Info("PositionRepository stopped");
+            _log.Info("PositionRepository stopped");
         }
 
         private void InitStream()
@@ -84,7 +91,7 @@ namespace EventStore.PositionRepository
             }
             catch (Exception ex)
             {
-                Log.Warn("Error while initializing stream {error}", ex.GetBaseException().Message);
+                _log.Error("Error while initializing stream", ex);
             }
         }
 
@@ -99,7 +106,7 @@ namespace EventStore.PositionRepository
             }
             catch (Exception e)
             {
-                Log.Warn($"Error while reading the position: {e.GetBaseException().Message}");
+                _log.Error($"Error while reading the position: {e.GetBaseException().Message}");
             }
             return _position;
         }
@@ -113,12 +120,12 @@ namespace EventStore.PositionRepository
 
         private void _connection_ErrorOccurred(object sender, ClientErrorEventArgs e)
         {
-            Log.Warn($"Error while using position repo connection: {e.Exception.GetBaseException().Message}");
+            _log.Warn($"Error while using position repo connection: {e.Exception.GetBaseException().Message}");
         }
 
         private void _connection_Connected(object sender, ClientConnectionEventArgs e)
         {
-            Log.Info("PositionRepository connected");
+            _log.Info("PositionRepository connected");
             if (_interval > 0)
                 _timer.Start();
             InitStream();
