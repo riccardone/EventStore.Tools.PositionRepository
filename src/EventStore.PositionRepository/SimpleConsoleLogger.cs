@@ -2,7 +2,7 @@
 
 namespace EventStore.PositionRepository
 {
-    public class SimpleConsoleLogger : IPositionRepositoryLogger
+    public class SimpleConsoleLogger : ILogger
     {
         private readonly string _moduleName;
 

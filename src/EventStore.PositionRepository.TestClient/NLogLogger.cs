@@ -3,11 +3,11 @@ using NLog;
 
 namespace EventStore.PositionRepository.TestClient
 {
-    public class NLogPositionRepositoryLogger : IPositionRepositoryLogger
+    public class NLogLogger : ILogger
     {
         private readonly Logger _logger;
 
-        public NLogPositionRepositoryLogger(Logger logger)
+        public NLogLogger(Logger logger)
         {
             _logger = logger;
         }
@@ -23,12 +23,7 @@ namespace EventStore.PositionRepository.TestClient
 
         public void Warn(string message, Exception ex)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Warn(string message, string warnMessage)
-        {
-            _logger.Warn(message, warnMessage);
+            _logger.Warn(message, ex.GetBaseException().Message);
         }
 
         public void Error(string message)
@@ -38,12 +33,7 @@ namespace EventStore.PositionRepository.TestClient
 
         public void Error(string message, Exception ex)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Error(string message, string errorMessage)
-        {
-            _logger.Error(message, errorMessage);
+            _logger.Error(message, ex.GetBaseException().Message);
         }
 
         public void Debug(string message)

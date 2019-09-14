@@ -11,7 +11,7 @@ namespace EventStore.PositionRepository
 {
     public class PositionRepository : IPositionRepository
     {
-        IPositionRepositoryLogger _log;
+        private readonly ILogger _log;
         private readonly string _positionStreamName;
         private readonly IConnectionBuilder _connectionBuilder;
         private readonly int _interval;
@@ -21,7 +21,8 @@ namespace EventStore.PositionRepository
         private Position _position = Position.Start;
         private Position _lastSavedPosition = Position.Start;
 
-        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connBuilder, IPositionRepositoryLogger logger, int interval = 1000)
+        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connBuilder,
+            ILogger logger, int interval = 1000)
         {
             _positionStreamName = positionStreamName;
             _connectionBuilder = connBuilder;
@@ -90,7 +91,7 @@ namespace EventStore.PositionRepository
             }
             catch (Exception ex)
             {
-                _log.Warn("Error while initializing stream {error}", ex.GetBaseException().Message);
+                _log.Error("Error while initializing stream", ex);
             }
         }
 
@@ -105,7 +106,7 @@ namespace EventStore.PositionRepository
             }
             catch (Exception e)
             {
-                _log.Warn($"Error while reading the position: {e.GetBaseException().Message}");
+                _log.Error($"Error while reading the position: {e.GetBaseException().Message}");
             }
             return _position;
         }
