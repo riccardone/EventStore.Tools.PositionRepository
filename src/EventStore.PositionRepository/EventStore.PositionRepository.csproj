@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="eventstore.client" Version="5.0.2" />
-    <PackageReference Include="nlog" Version="4.6.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0-preview9.19423.4" />
   </ItemGroup>
 
 </Project>
