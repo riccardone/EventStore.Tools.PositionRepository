@@ -17,13 +17,14 @@ namespace EventStore.PositionRepository.TestClient
         static void Main(string[] args)
         {
             ConfigureLogging();
-            var connSettings = ConnectionSettings.Create().SetDefaultUserCredentials(new UserCredentials("admin", "changeit"));
-            var connBuilder = new ConnectionBuilder(new Uri("tcp://localhost:1113"), connSettings, "testRepository");
-            var positionRepo = new PositionRepository($"Position-{connBuilder.ConnectionName}", "PositionUpdated",
-                connBuilder, new NLogLogger(LogManager.GetCurrentClassLogger()));
+
+            var connectionName = "testRepository";
+
+            var positionRepo = new PositionRepository($"Position-{connectionName}", "PositionUpdated",
+                BuildEsConnection, new NLogLogger(LogManager.GetCurrentClassLogger()));
             positionRepo.Start().Wait();
             Log.Info($"Initial position is {positionRepo.Get()}");
-            using (var connection = connBuilder.Build())
+            using (var connection = BuildEsConnection())
             {
                 connection.ConnectAsync().Wait();
                 var position = connection.AppendToStreamAsync("positionRepo-tests", ExpectedVersion.Any,
@@ -35,6 +36,13 @@ namespace EventStore.PositionRepository.TestClient
             Log.Info($"Event saved. Current position is {positionRepo.Get()}");
             Log.Info("Press enter to exit the program");
             Console.ReadLine();
+
+            IEventStoreConnection BuildEsConnection()
+            {
+                var connSettings = ConnectionSettings.Create().SetDefaultUserCredentials(new UserCredentials("admin", "changeit"));
+
+                return EventStoreConnection.Create(connSettings, new Uri("tcp://localhost:1113"), connectionName);
+            }
         }
 
         private static void ConfigureLogging()
