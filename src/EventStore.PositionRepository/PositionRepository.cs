@@ -43,6 +43,17 @@ namespace EventStore.PositionRepository
         {
         }
 
+        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder, 
+            ILogger logger, int interval = 1000) : this(positionStreamName, positionEventType, connectionBuilder.Build, logger, interval)
+        {
+        }
+
+        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder,
+            int interval = 1000) : this(positionStreamName, positionEventType, connectionBuilder.Build,
+            new SimpleConsoleLogger(nameof(PositionRepository)), interval)
+        {
+        }
+
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (_lastSavedPosition.Equals(_position))
