@@ -9,11 +9,13 @@ using Newtonsoft.Json;
 
 namespace EventStore.PositionRepository
 {
+    public delegate IEventStoreConnection BuildConnection();
+
     public class PositionRepository : IPositionRepository
     {
         private readonly ILogger _log;
         private readonly string _positionStreamName;
-        private readonly IConnectionBuilder _connectionBuilder;
+        private readonly BuildConnection _buildConnection;
         private readonly int _interval;
         public string PositionEventType { get; }
         private IEventStoreConnection _connection;
@@ -21,11 +23,11 @@ namespace EventStore.PositionRepository
         private Position _position = Position.Start;
         private Position _lastSavedPosition = Position.Start;
 
-        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connBuilder,
+        public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
             ILogger logger, int interval = 1000)
         {
             _positionStreamName = positionStreamName;
-            _connectionBuilder = connBuilder;
+            _buildConnection = buildConnection;
             _interval = interval;
             PositionEventType = positionEventType;
             if (interval <= 0) return;
@@ -35,8 +37,19 @@ namespace EventStore.PositionRepository
             _log = logger;
         }
 
-        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connBuilder,
-            int interval = 1000) : this(positionStreamName, positionEventType, connBuilder,
+        public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
+            int interval = 1000) : this(positionStreamName, positionEventType, buildConnection,
+            new SimpleConsoleLogger(nameof(PositionRepository)), interval)
+        {
+        }
+
+        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder, 
+            ILogger logger, int interval = 1000) : this(positionStreamName, positionEventType, connectionBuilder.Build, logger, interval)
+        {
+        }
+
+        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder,
+            int interval = 1000) : this(positionStreamName, positionEventType, connectionBuilder.Build,
             new SimpleConsoleLogger(nameof(PositionRepository)), interval)
         {
         }
@@ -58,7 +71,7 @@ namespace EventStore.PositionRepository
         public async Task Start()
         {
             _connection?.Close();
-            _connection = _connectionBuilder.Build();
+            _connection = _buildConnection();
             _connection.Connected += _connection_Connected;
             _connection.ErrorOccurred += _connection_ErrorOccurred;
             _connection.Disconnected += _connection_Disconnected;
