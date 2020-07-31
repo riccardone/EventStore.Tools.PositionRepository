@@ -138,7 +138,7 @@ namespace EventStore.PositionRepository
 
         private void _connection_Connected(object sender, ClientConnectionEventArgs e)
         {
-            _log.Info("PositionRepository connected");
+            _log?.Info("PositionRepository connected");
             if (_interval > 0)
                 _timer.Start();
             InitStream();
