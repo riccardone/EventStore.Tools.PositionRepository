@@ -7,12 +7,13 @@ using EventStore.ClientAPI.SystemData;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using NLog.Web;
 
 namespace EventStore.PositionRepository.TestClient
 {
     class Program
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Log = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
         static void Main(string[] args)
         {
@@ -38,8 +39,8 @@ namespace EventStore.PositionRepository.TestClient
             IEventStoreConnection BuildEsConnection()
             {
                 return EventStoreConnection.Create(
-                    ConnectionSettings.Create().SetDefaultUserCredentials(new UserCredentials("admin", "changeit")),
-                    new Uri("tcp://localhost:1113"));
+                    ConnectionSettings.Create().SetDefaultUserCredentials(new UserCredentials("admin", "changeit")).DisableServerCertificateValidation(),
+                    new Uri("tcp://admin:changeit@52.56.62.65:1113"));
             }
         }
 
