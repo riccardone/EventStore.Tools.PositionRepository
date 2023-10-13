@@ -35,6 +35,7 @@ namespace EventStore.PositionRepository.Gprc
             _timer.Elapsed += _timer_Elapsed;
             _timer.Enabled = true;
             _log = logger;
+            _timer.Start();
             InitStream();
         }
 
@@ -51,21 +52,12 @@ namespace EventStore.PositionRepository.Gprc
             SavePosition();
         }
 
-        private void SavePosition()
-        {
-            _connection.AppendToStreamAsync(_positionStreamName, StreamState.Any,
-                new[] { new EventData(Uuid.FromGuid(Guid.NewGuid()), PositionEventType, 
-                    SerializeObject(_position), null) }).Wait(); //Not sure what to do about the null metadata
-            _lastSavedPosition = _position;
-        }
-
         private void InitStream()
         {
             try
             {
                 _connection?.SetStreamMetadataAsync(_positionStreamName, StreamState.Any,
                     SerializeMetadata(new Dictionary<string, int> { { "$maxCount", 1 } })).Wait();
-                SavePosition();
             }
             catch (Exception ex)
             {
@@ -73,14 +65,22 @@ namespace EventStore.PositionRepository.Gprc
             }
         }
 
+        private void SavePosition()
+        {
+            _connection.AppendToStreamAsync(_positionStreamName, StreamState.Any,
+                new[] { new EventData(Uuid.FromGuid(Guid.NewGuid()), PositionEventType,
+                    SerializeObject(_position), null) }).Wait(); //Not sure what to do about the null metadata
+            _lastSavedPosition = _position;
+        }
+
         public Position Get()
         {
             try
             {
-                var evts = _connection.ReadStreamAsync(Direction.Backwards, _positionStreamName, StreamPosition.End, 20, true).ToArrayAsync().Result;
-                _position = evts.Length != 0
-                    ? DeserializeObject<Position>(evts.First().OriginalEvent.Data.ToArray())
-                    : Position.Start;
+                var evts = _connection.ReadStreamAsync(Direction.Backwards, _positionStreamName, StreamPosition.End, 20, false).ToArrayAsync().Result;
+                if (evts.Length > 0 && evts.First().OriginalPosition != null)
+                    _position = (Position)evts.First().OriginalPosition;
+                else _position = Position.Start;
             }
             catch (Exception e)
             {

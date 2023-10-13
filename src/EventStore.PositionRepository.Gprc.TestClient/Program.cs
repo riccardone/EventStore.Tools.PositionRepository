@@ -20,10 +20,10 @@ namespace EventStore.PositionRepository.TestClient.Gprc
         {
             ConfigureLogging();
             var esConnection = new EventStoreClient(EventStoreClientSettings.Create("esdb://admin:changeit@localhost:2113?tls=false"));
-            var positionRepo = new PositionRepository.Gprc.PositionRepository($"position-test", "PositionUpdated",
+            var positionRepo = new PositionRepository.Gprc.PositionRepository($"RemundoContractingPosition2", "PositionSaved",
                 esConnection, new NLogLogger(LogManager.GetCurrentClassLogger()));
             Log.Info($"Initial position is {positionRepo.Get()}");
-            var position = esConnection.AppendToStreamAsync("tests", StreamState.Any,
+            var position = esConnection.AppendToStreamAsync("RemundoContractingPosition2", StreamState.Any,
                     new List<EventData>
                         {new EventData(Uuid.FromGuid(Guid.NewGuid()), "EventTested", Encoding.ASCII.GetBytes("abc"), null, "application/json")})
                 .Result.LogPosition;
