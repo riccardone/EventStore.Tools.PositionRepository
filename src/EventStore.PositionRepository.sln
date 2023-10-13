@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29209.62
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore.PositionRepository", "EventStore.PositionRepository\EventStore.PositionRepository.csproj", "{DBB5BB7E-9884-4333-8716-3551641B3F24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStore.PositionRepository", "EventStore.PositionRepository\EventStore.PositionRepository.csproj", "{DBB5BB7E-9884-4333-8716-3551641B3F24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore.PositionRepository.TestClient", "EventStore.PositionRepository.TestClient\EventStore.PositionRepository.TestClient.csproj", "{A9AD84FD-770E-426F-9FCC-669D5B2786E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStore.PositionRepository.TestClient", "EventStore.PositionRepository.TestClient\EventStore.PositionRepository.TestClient.csproj", "{A9AD84FD-770E-426F-9FCC-669D5B2786E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventStore.PositionRepository.Gprc", "EventStore.PositionRepository.Gprc\EventStore.PositionRepository.Gprc.csproj", "{6575FEF8-AF91-4883-B7CB-E91CFE6159FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventStore.PositionRepository.Gprc.TestClient", "EventStore.PositionRepository.Gprc.TestClient\EventStore.PositionRepository.Gprc.TestClient.csproj", "{489BFDF1-5DE4-43EA-A661-CA1A8E1AB666}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{A9AD84FD-770E-426F-9FCC-669D5B2786E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9AD84FD-770E-426F-9FCC-669D5B2786E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9AD84FD-770E-426F-9FCC-669D5B2786E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6575FEF8-AF91-4883-B7CB-E91CFE6159FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6575FEF8-AF91-4883-B7CB-E91CFE6159FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6575FEF8-AF91-4883-B7CB-E91CFE6159FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6575FEF8-AF91-4883-B7CB-E91CFE6159FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{489BFDF1-5DE4-43EA-A661-CA1A8E1AB666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{489BFDF1-5DE4-43EA-A661-CA1A8E1AB666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{489BFDF1-5DE4-43EA-A661-CA1A8E1AB666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{489BFDF1-5DE4-43EA-A661-CA1A8E1AB666}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
