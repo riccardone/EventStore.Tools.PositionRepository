@@ -1,12 +1,10 @@
-﻿using System.Threading.Tasks;
-using EventStore.Client;
+﻿using EventStore.Client;
 
-namespace EventStore.PositionRepository.Gprc
+namespace EventStore.PositionRepository.Gprc;
+
+public interface IPositionRepository
 {
-    public interface IPositionRepository
-    {
-        string PositionEventType { get; }
-        Position Get();
-        void Set(Position position);
-    }
+    string PositionEventType { get; }
+    Position Get();
+    void Set(Position position);
 }
