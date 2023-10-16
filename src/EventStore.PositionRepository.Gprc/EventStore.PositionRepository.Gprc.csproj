@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Product>EventStore PositionRepository Grpc</Product>
-    <Authors>James Wright</Authors>
+    <Authors>Riccardo Di Nuzzo, James Wright</Authors>
 	  <Description>A repository to save a position and get the current position in EventStore with a GRPC connection</Description>
     <PackageProjectUrl>https://github.com/riccardone/EventStore.PositionRepository</PackageProjectUrl>
     <RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
