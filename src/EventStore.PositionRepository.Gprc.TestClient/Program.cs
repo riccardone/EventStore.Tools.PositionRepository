@@ -14,10 +14,10 @@ class Program
     {
         ConfigureLogging();
         var esConnection = new EventStoreClient(EventStoreClientSettings.Create("esdb://admin:changeit@localhost:2113?tls=false"));
-        var positionRepo = new EventStore.PositionRepository.Gprc.PositionRepository($"RemundoContractingPosition2", "PositionSaved",
+        var positionRepo = new EventStore.PositionRepository.Gprc.PositionRepository($"RemundoContractingPosition3", "PositionSaved",
             esConnection, new NLogLogger(LogManager.GetCurrentClassLogger()));
         Log.Info($"Initial position is {positionRepo.Get()}");
-        var position = esConnection.AppendToStreamAsync("RemundoContractingPosition2", StreamState.Any,
+        var position = esConnection.AppendToStreamAsync("RemundoContractingPosition3", StreamState.Any,
                 new List<EventData>
                     {new EventData(Uuid.FromGuid(Guid.NewGuid()), "EventTested", Encoding.ASCII.GetBytes("abc"), null, "application/json")})
             .Result.LogPosition;
