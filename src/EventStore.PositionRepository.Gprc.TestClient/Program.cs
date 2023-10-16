@@ -3,13 +3,12 @@ using EventStore.Client;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using NLog.Web;
 
 namespace EventStore.PositionRepository.Gprc.TestClient;
 
 class Program
 {
-    private static readonly Logger Log = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+    private static readonly ILogger Log = new NLogLogger(LogManager.GetCurrentClassLogger());
 
     static void Main(string[] args)
     {

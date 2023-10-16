@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Timers;
 using EventStore.Client;
-using Newtonsoft.Json;
 
 namespace EventStore.PositionRepository.Gprc;
 
@@ -94,20 +94,14 @@ public class PositionRepository : IPositionRepository
 
     private static StreamMetadata SerializeMetadata(object obj)
     {
-        var jsonObj = JsonConvert.SerializeObject(obj);
+        var jsonObj = JsonSerializer.Serialize(obj);
         var data = Encoding.UTF8.GetBytes(jsonObj);
         return new StreamMetadata(customMetadata: System.Text.Json.JsonDocument.Parse(data));
     }
 
     private static ReadOnlyMemory<byte> SerializeObject(Position position)
     {
-        var obj = JsonConvert.SerializeObject(position);
+        var obj = JsonSerializer.Serialize(position);
         return Encoding.UTF8.GetBytes(obj);
-    }
-
-    private static T DeserializeObject<T>(byte[] data)
-    {
-        var obj = Encoding.ASCII.GetString(data);
-        return JsonConvert.DeserializeObject<T>(obj);
     }
 }
