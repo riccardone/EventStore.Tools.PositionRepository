@@ -24,6 +24,15 @@ namespace EventStore.PositionRepository
         private Position _lastSavedPosition = Position.Start;
         private readonly int _maxAge = 0; // 1 week is 604800000
 
+        /// <summary>
+        /// PositionRepository tcp client
+        /// </summary>
+        /// <param name="positionStreamName">The name of the stream containing the saved position</param>
+        /// <param name="positionEventType">Set the name for the position event</param>
+        /// <param name="buildConnection">to build the eventstore connection client</param>
+        /// <param name="logger">Logger</param>
+        /// <param name="interval">number in milliseconds to define the interval between saving positions</param>
+        /// <param name="maxAge">If this millisecond number is set, the positions will last in the stream for the defined time, if not set there will only be the last position available in the stream</param>
         public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
             ILogger logger, int interval = 1000, int maxAge = 0)
         {
