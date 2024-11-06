@@ -10,14 +10,36 @@
     <RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>EventSourcing, EventStore, Read Models</PackageTags>
-    <PackageReleaseNotes>New GRPC PositionRepository</PackageReleaseNotes>
+    <PackageReleaseNotes>add maxAge parameter to the PositionRepository so that we can keep the last saved positions for a given time</PackageReleaseNotes>
     <PackageId>EventStore.Tools.PositionRepository.Gprc</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EventStore.Client.Grpc.Streams" Version="23.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

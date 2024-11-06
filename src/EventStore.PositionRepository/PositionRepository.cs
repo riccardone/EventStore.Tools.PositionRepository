@@ -22,9 +22,19 @@ namespace EventStore.PositionRepository
         private static Timer _timer;
         private Position _position = Position.Start;
         private Position _lastSavedPosition = Position.Start;
+        private readonly int _maxAge = 0; // 1 week is 604800000
 
+        /// <summary>
+        /// PositionRepository tcp client
+        /// </summary>
+        /// <param name="positionStreamName">The name of the stream containing the saved position</param>
+        /// <param name="positionEventType">Set the name for the position event</param>
+        /// <param name="buildConnection">to build the eventstore connection client</param>
+        /// <param name="logger">Logger</param>
+        /// <param name="interval">Define the interval between saving positions</param>
+        /// <param name="maxAge">When this is set, the positions will last in the stream for the defined number of seconds, if not set there will only be the last position available in the stream</param>
         public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
-            ILogger logger, int interval = 1000)
+            ILogger logger, int interval = 1000, int maxAge = 0)
         {
             _positionStreamName = positionStreamName;
             _buildConnection = buildConnection;
@@ -35,6 +45,7 @@ namespace EventStore.PositionRepository
             _timer.Elapsed += _timer_Elapsed;
             _timer.Enabled = true;
             _log = logger;
+            _maxAge = maxAge;
         }
 
         public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
@@ -99,8 +110,16 @@ namespace EventStore.PositionRepository
         {
             try
             {
-                _connection?.SetStreamMetadataAsync(_positionStreamName, ExpectedVersion.Any,
-                    SerializeObject(new Dictionary<string, int> { { "$maxCount", 1 } }));
+                if (_maxAge.Equals(0))
+                {
+                    _connection?.SetStreamMetadataAsync(_positionStreamName, ExpectedVersion.Any,
+                        SerializeObject(new Dictionary<string, int> { { "$maxCount", 1 } }));
+                }
+                else
+                {
+                    _connection?.SetStreamMetadataAsync(_positionStreamName, ExpectedVersion.Any,
+                        SerializeObject(new Dictionary<string, int> { { "$maxAge", _maxAge } }));
+                }
             }
             catch (Exception ex)
             {

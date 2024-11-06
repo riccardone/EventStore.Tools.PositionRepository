@@ -18,9 +18,10 @@ public class PositionRepository : IPositionRepository
     private static Timer _timer;
     private Position _position = Position.Start;
     private Position _lastSavedPosition = Position.Start;
+    private readonly int _maxAge = 0; // 1 week is 604800000
 
     public PositionRepository(string positionStreamName, string positionEventType, EventStoreClient client,
-        ILogger logger, int interval = 1000)
+        ILogger logger, int interval = 1000, int maxAge = 0)
     {
         _positionStreamName = positionStreamName;
         _connection = client;
@@ -32,6 +33,7 @@ public class PositionRepository : IPositionRepository
         _timer.Enabled = true;
         _log = logger;
         _timer.Start();
+        _maxAge = maxAge;
         InitStream();
     }
 
@@ -52,8 +54,16 @@ public class PositionRepository : IPositionRepository
     {
         try
         {
-            _connection?.SetStreamMetadataAsync(_positionStreamName, StreamState.Any,
-                SerializeMetadata(new Dictionary<string, int> { { "$maxCount", 1 } })).Wait();
+            if (_maxAge.Equals(0))
+            {
+                _connection?.SetStreamMetadataAsync(_positionStreamName, StreamState.Any,
+                    SerializeMetadata(new Dictionary<string, int> { { "$maxCount", 1 } })).Wait();
+            }
+            else
+            {
+                _connection?.SetStreamMetadataAsync(_positionStreamName, StreamState.Any,
+                    SerializeMetadata(new Dictionary<string, int> { { "$maxAge", _maxAge } })).Wait();
+            }
         }
         catch (Exception ex)
         {

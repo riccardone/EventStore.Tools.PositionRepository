@@ -19,17 +19,21 @@ namespace EventStore.PositionRepository.TestClient
         {
             ConfigureLogging();
             var positionRepo = new PositionRepository($"position-test", "PositionUpdated",
-                BuildEsConnection, new NLogLogger(LogManager.GetCurrentClassLogger()));
+                BuildEsConnection, new NLogLogger(LogManager.GetCurrentClassLogger()), 3000, 10);
             positionRepo.Start().Wait();
             Log.Info($"Initial position is {positionRepo.Get()}");
             using (var connection = BuildEsConnection())
             {
                 connection.ConnectAsync().Wait();
-                var position = connection.AppendToStreamAsync("tests", ExpectedVersion.Any,
-                        new List<EventData>
-                            {new EventData(Guid.NewGuid(), "EventTested", true, Encoding.ASCII.GetBytes("abc"), null)})
-                    .Result.LogPosition;
-                positionRepo.Set(position);
+                for (int i = 0; i < 100; i++)
+                {
+                    var position = connection.AppendToStreamAsync("tests", ExpectedVersion.Any,
+                            new List<EventData>
+                                {new EventData(Guid.NewGuid(), "EventTested", true, Encoding.ASCII.GetBytes($"pos {i}"), null)})
+                        .Result.LogPosition;
+                    positionRepo.Set(position);
+                    Thread.Sleep(1000);
+                }
             }
             Thread.Sleep(1500);
             Log.Info($"Event saved. Current position is {positionRepo.Get()}");
@@ -39,8 +43,8 @@ namespace EventStore.PositionRepository.TestClient
             IEventStoreConnection BuildEsConnection()
             {
                 return EventStoreConnection.Create(
-                    ConnectionSettings.Create().SetDefaultUserCredentials(new UserCredentials("admin", "changeit")).DisableServerCertificateValidation(),
-                    new Uri("tcp://admin:changeit@52.56.62.65:1113"));
+                    ConnectionSettings.Create().SetDefaultUserCredentials(new UserCredentials("admin", "changeit")),
+                    new Uri("tcp://admin:changeit@localhost:1113"));
             }
         }
 

@@ -1,23 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Product>EventStore PositionRepository</Product>
-    <Authors>Riccardo Di Nuzzo</Authors>
-    <Copyright>Riccardo Di Nuzzo</Copyright>
-    <Description>A repository to save a position and get the current position in EventStore</Description>
-    <PackageProjectUrl>https://github.com/riccardone/EventStore.PositionRepository</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
-    <RepositoryType>Github</RepositoryType>
-    <PackageTags>EventSourcing, EventStore, Read Models</PackageTags>
-    <PackageReleaseNotes>Fixed NRE for logger</PackageReleaseNotes>
-    <PackageId>EventStore.Tools.PositionRepository</PackageId>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.3</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Product>EventStore PositionRepository</Product>
+		<Authors>Riccardo Di Nuzzo</Authors>
+		<Copyright>Riccardo Di Nuzzo</Copyright>
+		<Description>A repository to save a position and get the current position in EventStore</Description>
+		<PackageProjectUrl>https://github.com/riccardone/EventStore.PositionRepository</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
+		<RepositoryType>Github</RepositoryType>
+		<PackageTags>EventSourcing, EventStore, Read Models</PackageTags>
+		<PackageReleaseNotes>add maxAge parameter to the PositionRepository so that we can keep the last saved positions for a given time</PackageReleaseNotes>
+		<PackageId>EventStore.Tools.PositionRepository</PackageId>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>1.0.4</Version>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="eventstore.client" Version="5.0.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="EventStore.Client" Version="5.0.12" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="LICENSE.txt">
+			<Pack>true</Pack>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="README.md">
+			<Pack>true</Pack>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\LICENSE">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
 
 </Project>
