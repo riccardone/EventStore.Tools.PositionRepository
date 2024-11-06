@@ -31,8 +31,8 @@ namespace EventStore.PositionRepository
         /// <param name="positionEventType">Set the name for the position event</param>
         /// <param name="buildConnection">to build the eventstore connection client</param>
         /// <param name="logger">Logger</param>
-        /// <param name="interval">number in milliseconds to define the interval between saving positions</param>
-        /// <param name="maxAge">If this millisecond number is set, the positions will last in the stream for the defined time, if not set there will only be the last position available in the stream</param>
+        /// <param name="interval">Define the interval between saving positions</param>
+        /// <param name="maxAge">When this is set, the positions will last in the stream for the defined number of seconds, if not set there will only be the last position available in the stream</param>
         public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
             ILogger logger, int interval = 1000, int maxAge = 0)
         {
