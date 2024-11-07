@@ -19,7 +19,7 @@ namespace EventStore.PositionRepository.TestClient
         {
             ConfigureLogging();
             var positionRepo = new PositionRepository($"position-test", "PositionUpdated",
-                BuildEsConnection, new NLogLogger(LogManager.GetCurrentClassLogger()), 3000, 10);
+                BuildEsConnection, new NLogLogger(LogManager.GetCurrentClassLogger()), 3000);
             positionRepo.Start().Wait();
             Log.Info($"Initial position is {positionRepo.Get()}");
             using (var connection = BuildEsConnection())

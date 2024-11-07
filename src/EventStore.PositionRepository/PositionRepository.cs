@@ -22,7 +22,6 @@ namespace EventStore.PositionRepository
         private static Timer _timer;
         private Position _position = Position.Start;
         private Position _lastSavedPosition = Position.Start;
-        private readonly int _maxAge = 0; // 1 week is 604800000
 
         /// <summary>
         /// PositionRepository tcp client
@@ -32,9 +31,8 @@ namespace EventStore.PositionRepository
         /// <param name="buildConnection">to build the eventstore connection client</param>
         /// <param name="logger">Logger</param>
         /// <param name="interval">Define the interval between saving positions</param>
-        /// <param name="maxAge">When this is set, the positions will last in the stream for the defined number of seconds, if not set there will only be the last position available in the stream</param>
         public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
-            ILogger logger, int interval = 1000, int maxAge = 0)
+            ILogger logger, int interval = 1000)
         {
             _positionStreamName = positionStreamName;
             _buildConnection = buildConnection;
@@ -45,23 +43,22 @@ namespace EventStore.PositionRepository
             _timer.Elapsed += _timer_Elapsed;
             _timer.Enabled = true;
             _log = logger;
-            _maxAge = maxAge;
         }
 
         public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
             int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, buildConnection,
-            new SimpleConsoleLogger(nameof(PositionRepository)), interval, maxAge)
+            new SimpleConsoleLogger(nameof(PositionRepository)), interval)
         {
         }
 
-        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder, 
-            ILogger logger, int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, connectionBuilder.Build, logger, interval, maxAge)
+        public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder,
+            ILogger logger, int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, connectionBuilder.Build, logger, interval)
         {
         }
 
         public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder,
             int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, connectionBuilder.Build,
-            new SimpleConsoleLogger(nameof(PositionRepository)), interval, maxAge)
+            new SimpleConsoleLogger(nameof(PositionRepository)), interval)
         {
         }
 
@@ -110,16 +107,8 @@ namespace EventStore.PositionRepository
         {
             try
             {
-                if (_maxAge.Equals(0))
-                {
-                    _connection?.SetStreamMetadataAsync(_positionStreamName, ExpectedVersion.Any,
-                        SerializeObject(new Dictionary<string, int> { { "$maxCount", 1 } }));
-                }
-                else
-                {
-                    _connection?.SetStreamMetadataAsync(_positionStreamName, ExpectedVersion.Any,
-                        SerializeObject(new Dictionary<string, int> { { "$maxAge", _maxAge } }));
-                }
+                _connection?.SetStreamMetadataAsync(_positionStreamName, ExpectedVersion.Any,
+                    SerializeObject(new Dictionary<string, int> { { "$maxCount", 1 } }));
             }
             catch (Exception ex)
             {
