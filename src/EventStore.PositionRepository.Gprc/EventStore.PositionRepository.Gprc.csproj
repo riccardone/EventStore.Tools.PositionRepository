@@ -10,10 +10,10 @@
     <RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>EventSourcing, EventStore, Read Models</PackageTags>
-    <PackageReleaseNotes>add maxAge parameter to the PositionRepository so that we can keep the last saved positions for a given time</PackageReleaseNotes>
+    <PackageReleaseNotes>remove maxage as it doesn't work as needed</PackageReleaseNotes>
     <PackageId>EventStore.Tools.PositionRepository.Gprc</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
