@@ -49,19 +49,19 @@ namespace EventStore.PositionRepository
         }
 
         public PositionRepository(string positionStreamName, string positionEventType, BuildConnection buildConnection,
-            int interval = 1000) : this(positionStreamName, positionEventType, buildConnection,
-            new SimpleConsoleLogger(nameof(PositionRepository)), interval)
+            int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, buildConnection,
+            new SimpleConsoleLogger(nameof(PositionRepository)), interval, maxAge)
         {
         }
 
         public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder, 
-            ILogger logger, int interval = 1000) : this(positionStreamName, positionEventType, connectionBuilder.Build, logger, interval)
+            ILogger logger, int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, connectionBuilder.Build, logger, interval, maxAge)
         {
         }
 
         public PositionRepository(string positionStreamName, string positionEventType, IConnectionBuilder connectionBuilder,
-            int interval = 1000) : this(positionStreamName, positionEventType, connectionBuilder.Build,
-            new SimpleConsoleLogger(nameof(PositionRepository)), interval)
+            int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, connectionBuilder.Build,
+            new SimpleConsoleLogger(nameof(PositionRepository)), interval, maxAge)
         {
         }
 

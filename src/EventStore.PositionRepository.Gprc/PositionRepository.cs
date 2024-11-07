@@ -38,8 +38,8 @@ public class PositionRepository : IPositionRepository
     }
 
     public PositionRepository(string positionStreamName, string positionEventType, EventStoreClient client,
-        int interval = 1000) : this(positionStreamName, positionEventType, client,
-        new SimpleConsoleLogger(nameof(PositionRepository)), interval)
+        int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, client,
+        new SimpleConsoleLogger(nameof(PositionRepository)), interval, maxAge)
     {
     }
 
