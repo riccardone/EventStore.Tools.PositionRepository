@@ -22,10 +22,16 @@ public class PositionRepository : IPositionRepository
     public PositionRepository(string positionStreamName, string positionEventType, EventStoreClient client,
         ILogger logger, int interval = 1000)
     {
+        if (string.IsNullOrWhiteSpace(positionStreamName))
+            throw new ArgumentException("Position stream name cannot be null or empty", nameof(positionStreamName));
         _positionStreamName = positionStreamName;
-        _connection = client;
-        _interval = interval;
+
+        if (string.IsNullOrWhiteSpace(positionEventType))
+            throw new ArgumentException("Position event type cannot be null or empty", nameof(positionEventType));
         PositionEventType = positionEventType;
+
+        _connection = client ?? throw new ArgumentNullException(nameof(client));
+        _interval = interval;
         if (interval <= 0) return;
         _timer = new Timer(interval);
         _timer.Elapsed += _timer_Elapsed;
