@@ -79,9 +79,9 @@ public class PositionRepository : IPositionRepository
     {
         try
         {
-            var evts = _connection.ReadStreamAsync(Direction.Backwards, _positionStreamName, StreamPosition.End, 20, false).ToArrayAsync().Result;
+            var evts = _connection.ReadStreamAsync(Direction.Backwards, _positionStreamName, StreamPosition.End, 1, false).ToArrayAsync().Result;
             if (evts.Length > 0 && evts.First().OriginalPosition != null)
-                _position = (Position)evts.First().OriginalPosition;
+                _position = DeserializePosition(evts.First().Event.Data);
             else _position = Position.Start;
         }
         catch (Exception e)
@@ -96,6 +96,13 @@ public class PositionRepository : IPositionRepository
         _position = position;
         if (_interval <= 0)
             SavePosition();
+    }
+
+    private static Position DeserializePosition(ReadOnlyMemory<byte> data)
+    {
+        var jsonString = Encoding.UTF8.GetString(data.ToArray());
+        var deserialised = JsonSerializer.Deserialize<PositionDto>(jsonString);
+        return new Position(deserialised.CommitPosition, deserialised.PreparePosition);
     }
 
     private static StreamMetadata SerializeMetadata(object obj)
