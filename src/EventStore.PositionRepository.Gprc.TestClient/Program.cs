@@ -14,16 +14,13 @@ class Program
     {
         ConfigureLogging();
         var esConnection = new EventStoreClient(EventStoreClientSettings.Create("esdb://admin:changeit@localhost:2113?tls=false"));
-        var positionRepo = new EventStore.PositionRepository.Gprc.PositionRepository($"RemundoContractingPosition3", "PositionSaved",
-            esConnection, new NLogLogger(LogManager.GetCurrentClassLogger()));
+        var positionRepo = new EventStore.PositionRepository.Gprc.PositionRepository($"EngagementsPositionStreamNameLocal", "PositionSaved",
+            esConnection, new NLogLogger(LogManager.GetCurrentClassLogger()), 5000);
         Log.Info($"Initial position is {positionRepo.Get()}");
-        var position = esConnection.AppendToStreamAsync("RemundoContractingPosition3", StreamState.Any,
-                new List<EventData>
-                    {new EventData(Uuid.FromGuid(Guid.NewGuid()), "EventTested", Encoding.ASCII.GetBytes("abc"), null, "application/json")})
-            .Result.LogPosition;
+        var position = new Position(3000, 3000);
         positionRepo.Set(position);
 
-        Thread.Sleep(1500);
+        Thread.Sleep(5500);
         Log.Info($"Event saved. Current position is {positionRepo.Get()}");
         Log.Info("Press enter to exit the program");
         Console.ReadLine();

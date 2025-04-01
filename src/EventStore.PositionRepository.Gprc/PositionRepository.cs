@@ -69,9 +69,9 @@ public class PositionRepository : IPositionRepository
 
     private void SavePosition()
     {
-        _connection.AppendToStreamAsync(_positionStreamName, StreamState.Any,
+        var result = _connection.AppendToStreamAsync(_positionStreamName, StreamState.Any,
             new[] { new EventData(Uuid.FromGuid(Guid.NewGuid()), PositionEventType,
-                SerializeObject(_position), null) }).Wait(); //Not sure what to do about the null metadata
+                SerializeObject(_position)) }).Result; //Not sure what to do about the null metadata
         _lastSavedPosition = _position;
     }
 
@@ -107,7 +107,10 @@ public class PositionRepository : IPositionRepository
 
     private static ReadOnlyMemory<byte> SerializeObject(Position position)
     {
-        var obj = JsonSerializer.Serialize(position);
+        var obj = JsonSerializer.Serialize(position, new JsonSerializerOptions
+        {
+            IncludeFields = true
+        });
         return Encoding.UTF8.GetBytes(obj);
     }
 }
