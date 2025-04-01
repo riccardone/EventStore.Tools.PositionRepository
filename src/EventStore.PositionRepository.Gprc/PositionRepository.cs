@@ -69,9 +69,9 @@ public class PositionRepository : IPositionRepository
 
     private void SavePosition()
     {
-        _connection.AppendToStreamAsync(_positionStreamName, StreamState.Any,
+        var result = _connection.AppendToStreamAsync(_positionStreamName, StreamState.Any,
             new[] { new EventData(Uuid.FromGuid(Guid.NewGuid()), PositionEventType,
-                SerializeObject(_position), null) }).Wait(); //Not sure what to do about the null metadata
+                SerializeObject(_position)) }).Result;
         _lastSavedPosition = _position;
     }
 
@@ -79,9 +79,9 @@ public class PositionRepository : IPositionRepository
     {
         try
         {
-            var evts = _connection.ReadStreamAsync(Direction.Backwards, _positionStreamName, StreamPosition.End, 20, false).ToArrayAsync().Result;
+            var evts = _connection.ReadStreamAsync(Direction.Backwards, _positionStreamName, StreamPosition.End, 1, false).ToArrayAsync().Result;
             if (evts.Length > 0 && evts.First().OriginalPosition != null)
-                _position = (Position)evts.First().OriginalPosition;
+                _position = DeserializePosition(evts.First().Event.Data);
             else _position = Position.Start;
         }
         catch (Exception e)
@@ -98,6 +98,13 @@ public class PositionRepository : IPositionRepository
             SavePosition();
     }
 
+    private static Position DeserializePosition(ReadOnlyMemory<byte> data)
+    {
+        var jsonString = Encoding.UTF8.GetString(data.ToArray());
+        var deserialised = JsonSerializer.Deserialize<PositionDto>(jsonString);
+        return new Position(deserialised.CommitPosition, deserialised.PreparePosition);
+    }
+
     private static StreamMetadata SerializeMetadata(object obj)
     {
         var jsonObj = JsonSerializer.Serialize(obj);
@@ -107,7 +114,10 @@ public class PositionRepository : IPositionRepository
 
     private static ReadOnlyMemory<byte> SerializeObject(Position position)
     {
-        var obj = JsonSerializer.Serialize(position);
+        var obj = JsonSerializer.Serialize(position, new JsonSerializerOptions
+        {
+            IncludeFields = true
+        });
         return Encoding.UTF8.GetBytes(obj);
     }
 }

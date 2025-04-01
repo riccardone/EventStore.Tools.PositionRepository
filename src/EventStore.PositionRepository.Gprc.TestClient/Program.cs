@@ -12,19 +12,27 @@ class Program
 
     static void Main(string[] args)
     {
+        //SYNC TEST
         ConfigureLogging();
         var esConnection = new EventStoreClient(EventStoreClientSettings.Create("esdb://admin:changeit@localhost:2113?tls=false"));
-        var positionRepo = new EventStore.PositionRepository.Gprc.PositionRepository($"RemundoContractingPosition3", "PositionSaved",
+        var positionRepo = new EventStore.PositionRepository.Gprc.PositionRepository($"EngagementsPositionStreamNameLocal1", "PositionSaved",
             esConnection, new NLogLogger(LogManager.GetCurrentClassLogger()));
-        Log.Info($"Initial position is {positionRepo.Get()}");
-        var position = esConnection.AppendToStreamAsync("RemundoContractingPosition3", StreamState.Any,
-                new List<EventData>
-                    {new EventData(Uuid.FromGuid(Guid.NewGuid()), "EventTested", Encoding.ASCII.GetBytes("abc"), null, "application/json")})
-            .Result.LogPosition;
-        positionRepo.Set(position);
+
+        Log.Info("Position set to start");
+
+        Position lastSavedPosition = Position.Start;
+        Task.Run(() => esConnection.SubscribeToAllAsync(FromAll.Start, async (arg1, arg2, ct) =>
+        {
+            if (lastSavedPosition != Position.Start) return;
+            lastSavedPosition = (Position)arg2.OriginalPosition;
+            positionRepo.Set(lastSavedPosition);
+            Log.Info($"Position set to {lastSavedPosition}");
+        }));
 
         Thread.Sleep(1500);
-        Log.Info($"Event saved. Current position is {positionRepo.Get()}");
+
+        var updatedPosition = positionRepo.Get();
+        Log.Info($"Updated position is {updatedPosition}");
         Log.Info("Press enter to exit the program");
         Console.ReadLine();
     }
