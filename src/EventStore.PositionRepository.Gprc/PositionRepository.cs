@@ -71,7 +71,7 @@ public class PositionRepository : IPositionRepository
     {
         var result = _connection.AppendToStreamAsync(_positionStreamName, StreamState.Any,
             new[] { new EventData(Uuid.FromGuid(Guid.NewGuid()), PositionEventType,
-                SerializeObject(_position)) }).Result; //Not sure what to do about the null metadata
+                SerializeObject(_position)) }).Result;
         _lastSavedPosition = _position;
     }
 

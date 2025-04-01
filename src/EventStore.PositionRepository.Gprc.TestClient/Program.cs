@@ -12,21 +12,6 @@ class Program
 
     static void Main(string[] args)
     {
-        //ConfigureLogging();
-        //var esConnection = new EventStoreClient(EventStoreClientSettings.Create("esdb://admin:changeit@localhost:2113?tls=false"));
-        //var positionRepo = new EventStore.PositionRepository.Gprc.PositionRepository($"EngagementsPositionStreamNameLocal1", "PositionSaved",
-        //    esConnection, new NLogLogger(LogManager.GetCurrentClassLogger()), 5000);
-        //var initialPosition = positionRepo.Get();
-        //Log.Info($"Initial position is {initialPosition}");
-
-        //positionRepo.Set(initialPosition);
-        //Log.Info($"Position set to initial position {initialPosition}");
-
-        //Thread.Sleep(5500);
-        //Log.Info($"Event saved. Current position is {positionRepo.Get()}");
-        //Log.Info("Press enter to exit the program");
-        //Console.ReadLine();
-
         //SYNC TEST
         ConfigureLogging();
         var esConnection = new EventStoreClient(EventStoreClientSettings.Create("esdb://admin:changeit@localhost:2113?tls=false"));
@@ -46,8 +31,8 @@ class Program
 
         Thread.Sleep(1500);
 
-        var initialPosition = positionRepo.Get();
-        Log.Info($"Updated position is {initialPosition}");
+        var updatedPosition = positionRepo.Get();
+        Log.Info($"Updated position is {updatedPosition}");
         Log.Info("Press enter to exit the program");
         Console.ReadLine();
     }
