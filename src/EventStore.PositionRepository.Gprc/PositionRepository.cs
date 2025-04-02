@@ -32,13 +32,13 @@ public class PositionRepository : IPositionRepository
 
         _connection = client ?? throw new ArgumentNullException(nameof(client));
         _interval = interval;
+        InitStream();
         if (interval <= 0) return;
         _timer = new Timer(interval);
         _timer.Elapsed += _timer_Elapsed;
         _timer.Enabled = true;
         _log = logger;
         _timer.Start();
-        InitStream();
     }
 
     public PositionRepository(string positionStreamName, string positionEventType, EventStoreClient client,
