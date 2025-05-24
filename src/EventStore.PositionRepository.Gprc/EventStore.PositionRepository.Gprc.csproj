@@ -31,9 +31,10 @@
 
   <ItemGroup>
     <PackageReference Include="KurrentDB.Client" Version="1.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="8.1" />
+  </ItemGroup>
   <ItemGroup>
     <None Update="LICENSE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
