@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Timers;
-using EventStore.Client;
+using KurrentDB.Client;
 
 namespace EventStore.PositionRepository.Gprc;
 
@@ -14,12 +14,12 @@ public class PositionRepository : IPositionRepository
     private readonly string _positionStreamName;
     private readonly int _interval;
     public string PositionEventType { get; }
-    private readonly EventStoreClient _connection;
+    private readonly KurrentDBClient _connection;
     private static Timer _timer;
     private Position _position = Position.Start;
     private Position _lastSavedPosition = Position.Start;
 
-    public PositionRepository(string positionStreamName, string positionEventType, EventStoreClient client,
+    public PositionRepository(string positionStreamName, string positionEventType, KurrentDBClient client,
         ILogger logger, int interval = 1000)
     {
         if (string.IsNullOrWhiteSpace(positionStreamName))
@@ -32,16 +32,16 @@ public class PositionRepository : IPositionRepository
 
         _connection = client ?? throw new ArgumentNullException(nameof(client));
         _interval = interval;
+        InitStream();
         if (interval <= 0) return;
         _timer = new Timer(interval);
         _timer.Elapsed += _timer_Elapsed;
         _timer.Enabled = true;
         _log = logger;
         _timer.Start();
-        InitStream();
     }
 
-    public PositionRepository(string positionStreamName, string positionEventType, EventStoreClient client,
+    public PositionRepository(string positionStreamName, string positionEventType, KurrentDBClient client,
         int interval = 1000, int maxAge = 0) : this(positionStreamName, positionEventType, client,
         new SimpleConsoleLogger(nameof(PositionRepository)))
     {

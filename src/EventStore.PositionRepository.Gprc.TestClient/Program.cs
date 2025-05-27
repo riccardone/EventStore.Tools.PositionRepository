@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using EventStore.Client;
+using KurrentDB.Client;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -14,11 +14,12 @@ class Program
     {
         //SYNC TEST
         ConfigureLogging();
-        var esConnection = new EventStoreClient(EventStoreClientSettings.Create("esdb://admin:changeit@localhost:2113?tls=false"));
-        var positionRepo = new EventStore.PositionRepository.Gprc.PositionRepository($"EngagementsPositionStreamNameLocal1", "PositionSaved",
-            esConnection, new NLogLogger(LogManager.GetCurrentClassLogger()));
+        var esConnection = new KurrentDBClient(KurrentDBClientSettings.Create("esdb://admin:changeit@localhost:2113?tls=false"));
+        var positionRepo = new PositionRepository($"EngagementsPositionStreamNameLocal1", "PositionSaved",
+            esConnection, new NLogLogger(LogManager.GetCurrentClassLogger()), 0);
 
-        Log.Info("Position set to start");
+        positionRepo.Set(Position.Start);
+        Log.Info($"Position set to start {positionRepo.Get()}");
 
         Position lastSavedPosition = Position.Start;
         Task.Run(() => esConnection.SubscribeToAllAsync(FromAll.Start, async (arg1, arg2, ct) =>

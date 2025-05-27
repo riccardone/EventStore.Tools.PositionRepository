@@ -1,4 +1,5 @@
 ﻿using EventStore.Client;
+using KurrentDB.Client;
 
 namespace EventStore.PositionRepository.Gprc;
 
