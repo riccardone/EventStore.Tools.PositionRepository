@@ -29,7 +29,7 @@ public class PositionRepository : IPositionRepository
         if (string.IsNullOrWhiteSpace(positionEventType))
             throw new ArgumentException("Position event type cannot be null or empty", nameof(positionEventType));
         PositionEventType = positionEventType;
-
+        _log = logger;
         _connection = client ?? throw new ArgumentNullException(nameof(client));
         _interval = interval;
         InitStream();
@@ -37,7 +37,6 @@ public class PositionRepository : IPositionRepository
         _timer = new Timer(interval);
         _timer.Elapsed += _timer_Elapsed;
         _timer.Enabled = true;
-        _log = logger;
         _timer.Start();
     }
 
