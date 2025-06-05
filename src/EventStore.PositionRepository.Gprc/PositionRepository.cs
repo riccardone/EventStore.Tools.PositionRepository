@@ -104,6 +104,11 @@ public class PositionRepository : IPositionRepository
             position = InternalGet();
             return true;
         }
+        catch (StreamNotFoundException)
+        {
+            // Position stream not yet created
+            return true;
+        }
         catch (Exception e)
         {
             _log.Error($"Error while reading the position: {e.GetBaseException().Message}");
