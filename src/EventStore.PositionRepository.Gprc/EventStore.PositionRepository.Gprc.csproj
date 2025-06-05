@@ -10,10 +10,10 @@
     <RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>EventSourcing, EventStore, Read Models</PackageTags>
-    <PackageReleaseNotes>upgrade version .net to 8</PackageReleaseNotes>
+    <PackageReleaseNotes>add TryGet</PackageReleaseNotes>
     <PackageId>EventStore.Tools.PositionRepository.Gprc</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4</Version>
+    <Version>1.4.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
