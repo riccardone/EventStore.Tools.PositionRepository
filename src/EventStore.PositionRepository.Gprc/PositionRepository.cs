@@ -78,16 +78,37 @@ public class PositionRepository : IPositionRepository
     {
         try
         {
-            var evts = _connection.ReadStreamAsync(Direction.Backwards, _positionStreamName, StreamPosition.End, 1, false).ToArrayAsync().Result;
-            if (evts.Length > 0 && evts.First().OriginalPosition != null)
-                _position = DeserializePosition(evts.First().Event.Data);
-            else _position = Position.Start;
+            return InternalGet();
         }
         catch (Exception e)
         {
             _log.Error($"Error while reading the position: {e.GetBaseException().Message}");
         }
         return _position;
+    }
+
+    private Position InternalGet()
+    {
+        var evts = _connection.ReadStreamAsync(Direction.Backwards, _positionStreamName, StreamPosition.End, 1, false).ToArrayAsync().Result;
+        if (evts.Length > 0 && evts.First().OriginalPosition != null)
+            _position = DeserializePosition(evts.First().Event.Data);
+        else _position = Position.Start;
+        return _position;
+    }
+
+    public bool TryGet(out Position position)
+    {
+        position = Position.Start;
+        try
+        {
+            position = InternalGet();
+            return true;
+        }
+        catch (Exception e)
+        {
+            _log.Error($"Error while reading the position: {e.GetBaseException().Message}");
+            return false;
+        }
     }
 
     public void Set(Position position)
