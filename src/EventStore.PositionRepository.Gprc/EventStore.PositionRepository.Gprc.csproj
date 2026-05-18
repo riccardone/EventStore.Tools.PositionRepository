@@ -10,10 +10,10 @@
     <RepositoryUrl>https://github.com/riccardone/EventStore.PositionRepository</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>EventSourcing, EventStore, Read Models</PackageTags>
-    <PackageReleaseNotes>add TryGet</PackageReleaseNotes>
+    <PackageReleaseNotes>upgrade KurrentDB.Client to 1.4.0 to address security vulnerabilities</PackageReleaseNotes>
     <PackageId>EventStore.Tools.PositionRepository.Gprc</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.4.3</Version>
+    <Version>1.4.4</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KurrentDB.Client" Version="1.0.0" />
+    <PackageReference Include="KurrentDB.Client" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="LICENSE.txt">
