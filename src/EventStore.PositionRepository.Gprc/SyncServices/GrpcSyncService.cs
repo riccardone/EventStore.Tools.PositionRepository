@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EventStore.PositionRepository.Gprc.SyncServices;
 
-public sealed class GrpcSyncService : ISyncService
+public class GrpcSyncService : ISyncService
 {
     private readonly ILogger<GrpcSyncService> _logger;
     private readonly IPositionRepository _positionRepository;
@@ -133,7 +133,7 @@ public sealed class GrpcSyncService : ISyncService
         CatchedUpEvent?.Invoke(this, EventArgs.Empty);
     }
 
-    private Task EventAppeared(ResolvedEvent evt)
+    protected virtual Task EventAppeared(ResolvedEvent evt)
     {
         try
         {
@@ -166,7 +166,7 @@ public sealed class GrpcSyncService : ISyncService
         return Task.CompletedTask;
     }
 
-    private void ProcessEventAppeared(string eventType, JsonNode data, JsonNode metaData)
+    protected virtual void ProcessEventAppeared(string eventType, JsonNode data, JsonNode metaData)
     {
         _handlingFunctions[eventType](data, metaData);
     }
