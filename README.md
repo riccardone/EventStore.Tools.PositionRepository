@@ -1,20 +1,83 @@
-# Position Repository for EventStore
-To store current position and retrieve last used position on EventStore. This nuget is written in C# .Net Standard and it's compatible with both .Net Framwework and Core projects. It can be used whenever you need to retrieve the last processing position or save the current. The destination of the position is in an EventStore stream. The stream will contains only 1 event that is your position. 
-The repository save the position every second to avoid overloading EventStore with unnecessary operations in case you are processing at speed. You can change the default setting passing the interval when you build the PositionRepository
+# Position Repository for KurrentDB
 
-You can reference this project using Nuget from within Visual Studio
+A lightweight library for persisting and retrieving the last processed position in a KurrentDB (formerly EventStoreDB) stream. Useful when you need to resume a subscription from where you left off after a restart.
+
+The position is saved to a dedicated KurrentDB stream (capped at 1 event). To avoid excessive writes during fast processing, saves are batched on a configurable interval (default: 1 second).
+
+## Packages
+
+| Package | Target | Description |
+|---|---|---|
+| `EventStore.Tools.PositionRepository.Gprc` | net8.0 | Recommended. Uses `KurrentDB.Client` (gRPC) |
+| `EventStore.Tools.PositionRepository` | netstandard2.0 | Legacy. Uses the old TCP `EventStore.Client` |
+
+## Installation
+
+### gRPC package (recommended)
+```
+PM> Install-Package EventStore.Tools.PositionRepository.Gprc
+```
+```
+dotnet add package EventStore.Tools.PositionRepository.Gprc
+```
+
+### Legacy TCP package
 ```
 PM> Install-Package EventStore.Tools.PositionRepository
 ```
-From command line using Visual Studio Code or other editors
 ```
-> dotnet add package EventStore.Tools.PositionRepository
-```  
-## Set the current position
+dotnet add package EventStore.Tools.PositionRepository
 ```
-positionRepo.Set(resolvedEvent.OriginalPosition);
-```  
-## Get the last processed position
+
+## Usage
+
+### Create the repository
+```csharp
+var client = new KurrentDBClient(KurrentDBClientSettings.Create("esdb://localhost:2113?tls=false"));
+
+var positionRepo = new PositionRepository(
+    positionStreamName: "my-subscription-position",
+    positionEventType: "PositionStored",
+    client: client);
 ```
-connection.SubscribeToAllFrom(positionRepo.Get(), ...other params)
+
+### Save the current position
+```csharp
+positionRepo.Set(resolvedEvent.OriginalPosition.Value);
 ```
+
+### Resume from the last saved position
+```csharp
+if (positionRepo.TryGet(out var position))
+{
+    await client.SubscribeToAllAsync(position, eventAppeared);
+}
+```
+
+### Optional: disable the timer and save on every event
+```csharp
+// Pass interval: 0 to save immediately on every Set() call
+var positionRepo = new PositionRepository("my-position", "PositionStored", client, interval: 0);
+```
+
+## Cutting a Release
+
+Releases are published to NuGet via GitHub Actions and triggered manually.
+
+### Prerequisites
+- A `NUGET_API_KEY` secret must be set in the repository under *Settings → Secrets and variables → Actions*
+
+### Publish EventStore.Tools.PositionRepository.Gprc
+1. Go to **Actions → Publish EventStore.Tools.PositionRepository.Gprc → Run workflow**
+2. Leave the version field **empty** to auto-bump the patch (e.g. `1.4.4` → `1.4.5`), or enter a specific version (e.g. `1.5.0`) for a minor/major bump
+3. Click **Run workflow**
+
+The workflow will:
+- Update the version in the `.csproj`
+- Build and pack the NuGet package
+- Push it to [NuGet.org](https://www.nuget.org)
+- Commit the version bump and create a `gprc-<version>` tag
+
+### Publish EventStore.Tools.PositionRepository (legacy)
+Same steps as above but use **Actions → Publish EventStore.Tools.PositionRepository**.  
+A `legacy-<version>` tag is created on completion.
