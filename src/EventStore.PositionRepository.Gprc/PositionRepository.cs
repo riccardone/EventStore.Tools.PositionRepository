@@ -80,11 +80,16 @@ public class PositionRepository : IPositionRepository
         {
             return InternalGet();
         }
+        catch (StreamNotFoundException)
+        {
+            _position = Position.Start;
+            return _position;
+        }
         catch (Exception e)
         {
             _log.Error($"Error while reading the position: {e.GetBaseException().Message}");
+            throw;
         }
-        return _position;
     }
 
     private Position InternalGet()
